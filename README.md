@@ -1,7 +1,7 @@
-# Flask Authentication Example
+# Flask 
 
 This repository showcase user authentication using Flask-Login, demonstrating
-a simple web application with user registration, login.
+a simple web application with user registration, login and de-register(delete user)
 
 ## Features
 
@@ -15,7 +15,7 @@ a simple web application with user registration, login.
 1.Clone the repository to your local machine:
 
 ```bash
-git clone 
+git clone https://github.com/debolina-seal/flask.git
 ```
 
 2.Install the required dependencies:
