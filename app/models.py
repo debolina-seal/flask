@@ -20,5 +20,16 @@ class User(db.Model, UserMixin):
     def remove(self):
         return db.session.delete(self)
 
+class Task(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
+    user = db.Column(db.Integer, nullable=False )
+    name = db.Column(db.String(80), nullable=False)
+    status = db.Column(db.String(255), nullable=False)
+    created_date = db.Column(db.DateTime, default=datetime.utcnow)
 
-__all__ = [User, ]
+    def __repr__(self):
+        return f'<Task {self.name}>'
+    def remove(self):
+        return db.session.delete(self)
+
+__all__ = [User, Task]

@@ -1,7 +1,7 @@
 # Flask modules
 from flask_wtf import FlaskForm
 from wtforms.validators import ValidationError
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import SelectField, StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Regexp
 
 # Local modules
@@ -44,3 +44,13 @@ class RegistrationForm(FlaskForm):
     def validate_password(self, password):
         if not any(c.isalpha() for c in password.data) or not any(c.isdigit() for c in password.data):
             raise ValidationError('Password must contain at least one letter and one digit.')
+
+class CreatTaskForm(FlaskForm):
+    name = StringField('Task name', validators=[
+        DataRequired(),
+        Length(min=2, max=80),
+        Regexp(r'^[a-zA-Z0-9_]+$', message='Name must contain only letters, numbers, and underscores.')],
+                       render_kw={'placeholder': 'Task name'})
+    status = SelectField('Status', choices=[('To-Do','ToDo'),('Complete', 'Completed')])
+   
+    submit = SubmitField('Done')

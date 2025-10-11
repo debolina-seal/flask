@@ -1,14 +1,15 @@
 # Flask modules
 from flask import Blueprint, redirect, url_for, render_template, flash
 from flask_login import login_user, logout_user, current_user, login_required
+from sqlalchemy import select, update
+from sqlalchemy.orm import Session
 
 # Local modules
-from app.models import User
+from app.models import Task, User
 from app.extensions import db, bcrypt, login_manager
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, CreatTaskForm
 
 routes_bp = Blueprint('routes', __name__, url_prefix="/")
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -18,7 +19,10 @@ def load_user(user_id):
 @routes_bp.route("/")
 @login_required
 def dashboard():
-    return render_template('index.html')
+    stmt = select(Task.name,Task.status, Task.id).where(Task.user == int(current_user.get_id()))
+    
+    tasks = db.session.execute(stmt).fetchall()
+    return render_template('index.html',tasks=tasks)
 
 
 @routes_bp.route("/login", methods=['GET', 'POST'])
@@ -85,3 +89,34 @@ def delete_user():
     db.session.commit()
     flash(f'you are no longer exists.', 'success')
     return redirect(url_for("routes.login"))
+
+@routes_bp.route("/add_task", methods=['GET', 'POST'])
+@login_required
+def add_task():
+    form = CreatTaskForm()
+   
+    if form.validate_on_submit():
+        name = form.name.data
+        status = form.status.data
+        new_task = Task(name=name, status=status, user=int(current_user.get_id()))
+        db.session.add(new_task)
+        db.session.commit()
+        return redirect(url_for("routes.dashboard"))
+
+
+    return render_template('task.html',form=form)
+
+@routes_bp.route("/change_task/<id>", methods=['GET', 'POST'])
+@login_required
+def change_task(id):
+    task = db.session.query(Task).get(id)
+    form = CreatTaskForm(obj=task)
+    if form.validate_on_submit():
+        print(form.name.data)
+        task.name = form.name.data
+        task.status = form.status.data
+        db.session.commit()
+        return redirect(url_for("routes.dashboard"))
+
+
+    return render_template('task.html',form=form, changePage = True)

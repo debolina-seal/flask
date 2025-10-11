@@ -8,7 +8,32 @@ DashBoard
 <h1>Dash board Page</h1>
 <br></br>
 <p>Hello there, you are logged in as <span class="text-success font-weight-bold">{{ current_user.name }}</span>.</p>
-<p>Your account has been created at  <span class="text-success font-weight-bold">{{ current_user.created_date }}</span>.</p>
+<p>Your account has been created at <span class="text-success font-weight-bold">{{ current_user.created_date }}</span>.
+</p>
+<a class="btn btn-success" href="{{ url_for('routes.add_task') }}">Add task</a>
+<br></br>
+{% if tasks %}
+<h2> Here is your list of task</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Task Name</th>
+        <th scope="col">Task status</th>
+        <th scope="col"> Make change</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for task in tasks %}
+    <tr>
+        <td>{{task.name}}</td>
+        <td>{{task.status}}</td>
+        <td><a class="btn btn-warning" href="{{ url_for('routes.change_task', id = task['id']) }}">change</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{%endif%}
 <a href="{{ url_for('routes.logout') }}">Logout</a>
 <br></br>
 <a href="{{ url_for('routes.delete_user') }}">Delete this user</a>
