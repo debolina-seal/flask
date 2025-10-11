@@ -51,6 +51,6 @@ class CreatTaskForm(FlaskForm):
         Length(min=2, max=80),
         Regexp(r'^[a-zA-Z0-9_]+$', message='Name must contain only letters, numbers, and underscores.')],
                        render_kw={'placeholder': 'Task name'})
-    status = SelectField('Status', choices=[('To-Do','ToDo'),('Complete', 'Completed')])
+    status = SelectField('Status', choices=[('To-Do','To Do'),('Complete', 'Completed'), ('In-Progress', 'In Progress')])
    
     submit = SubmitField('Done')
