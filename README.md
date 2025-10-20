@@ -1,7 +1,7 @@
 # Flask 
 
 This repository showcase user authentication using Flask-Login, demonstrating
-a simple web application with user registration, login and de-register(delete user), loged in user can add task with to-do, in-progress and completed status. Also able to change task detail afterward  
+a simple web application with user registration, login and de-register(delete user), loged in user can add task with to-do, in-progress and completed status. Also able to change task detail afterward.
 
 ## Features
 
@@ -16,7 +16,8 @@ a simple web application with user registration, login and de-register(delete us
 1.Clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/debolina-seal/flask.git & cd flask
+git clone https://github.com/debolina-seal/flask.git 
+cd flask
 ```
 
 2.Install the required dependencies:
@@ -32,3 +33,31 @@ python main.py
 ```
 
 Open your web browser and navigate to http://localhost:5000 to access the application.
+
+## Project Structure
+
+flask/
+├── app/                            # Core application module
+│   ├── __init__.py                          
+│   ├── extentions.py
+│   ├── models.py
+│── auth/                          # Module to handle authentication
+│   ├── __init__.py
+│   ├── forms.py      
+│   ├── routes.py
+│── task/                          # Module to handle task
+│   ├── __init__.py
+│   ├── forms.py      
+│   ├── routes.py
+├── templete/                     # Frontend code
+│   ├── auth/
+│   │   ├── login.html
+│   │   ├── register.html
+│   ├── base.html
+│   ├── index.html               
+│   ├── task.html 
+│── instance/   
+│   ├── database.db           
+├── main.py                      # File to run application                       
+├── requirements.txt             # Dependency to install
+└── README.md                    # This file

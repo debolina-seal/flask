@@ -1,22 +1,21 @@
 # Flask modules
 from flask import Blueprint, redirect, url_for, render_template, flash
 from flask_login import login_user, logout_user, current_user, login_required
-from sqlalchemy import select, update
-from sqlalchemy.orm import Session
+from sqlalchemy import select
 
 # Local modules
 from app.models import Task, User
 from app.extensions import db, bcrypt, login_manager
-from app.forms import LoginForm, RegistrationForm, CreatTaskForm
+from auth.forms import LoginForm, RegistrationForm, CreatTaskForm
 
-routes_bp = Blueprint('routes', __name__, url_prefix="/")
+routes_auth = Blueprint('routes', __name__, url_prefix="/")
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.filter_by(id=user_id).one_or_none()
 
 
-@routes_bp.route("/")
+@routes_auth.route("/")
 @login_required
 def dashboard():
     stmt = select(Task.name,Task.status, Task.id).where(Task.user == int(current_user.get_id()))
@@ -25,7 +24,7 @@ def dashboard():
     return render_template('index.html',tasks=tasks)
 
 
-@routes_bp.route("/login", methods=['GET', 'POST'])
+@routes_auth.route("/login", methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("routes.dashboard"))
@@ -48,7 +47,7 @@ def login():
     return render_template('auth/login.html', form=form)
 
 
-@routes_bp.route("/register", methods=['GET', 'POST'])
+@routes_auth.route("/register", methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for("routes.dashboard"))
@@ -76,38 +75,19 @@ def register():
     return render_template('auth/register.html', form=form)
 
 
-@routes_bp.route("/logout", methods=['GET', 'POST'])
+@routes_auth.route("/logout", methods=['GET', 'POST'])
 @login_required
 def logout():
     logout_user()
     return redirect(url_for("routes.login"))
 
-@routes_bp.route("/delete", methods=['GET', 'POST'])
+@routes_auth.route("/delete", methods=['GET', 'POST'])
 @login_required
 def delete_user():
     current_user.remove()
     db.session.commit()
     flash(f'you are no longer exists.', 'success')
     return redirect(url_for("routes.login"))
-
-@routes_bp.route("/add_task", methods=['GET', 'POST'])
-@login_required
-def add_task():
-    form = CreatTaskForm()
-   
-    if form.validate_on_submit():
-        name = form.name.data
-        status = form.status.data
-        new_task = Task(name=name, status=status, user=int(current_user.get_id()))
-        db.session.add(new_task)
-        db.session.commit()
-        return redirect(url_for("routes.dashboard"))
-
-
-    return render_template('task.html',form=form)
-
-@routes_bp.route("/change_task/<id>", methods=['GET', 'POST'])
-@login_required
 def change_task(id):
     task = db.session.query(Task).get(id)
     form = CreatTaskForm(obj=task)

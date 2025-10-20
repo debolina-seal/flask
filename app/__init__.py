@@ -24,7 +24,9 @@ def create_app(debug: bool = False) -> Flask:
         db.create_all()
 
     # Register blueprints
-    from app.routes import routes_bp
-    app.register_blueprint(routes_bp)
+    from auth.routes import routes_auth
+    from task.routes import routes_task
+    app.register_blueprint(routes_auth)
+    app.register_blueprint(routes_task)
 
     return app
